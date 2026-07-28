@@ -1,4 +1,4 @@
-// Contract & Caregiver Information extracted from user documents
+// Contract & Caregiver Information extracted from user documents (Updated April 2026)
 export const CONTRACT_DATA = {
   caregiver: {
     fullName: "Bijili Joseph",
@@ -24,14 +24,17 @@ export const CONTRACT_DATA = {
     address: "הירקון 76, תל אביב",
     phone: "073-2509000",
     fax: "03-5162107",
-    placementFee: 2000, // 2000 ILS incl VAT
+    placementFee: 2000, 
     annualRegistrationFee: 840, // 70 ILS / month
     agreementPeriod: "22/07/2026 עד 22/07/2027"
   },
   agreedRates: {
-    saturdayExtraRate: 400, // 400 ILS per Saturday worked
-    holidayExtraRate: 400,  // 400 ILS per Holiday worked
-    defaultSaturdaysPerMonth: 1, // User agreed on 1 Saturday per month
-    legalHolidaysQuota: 9   // Entitled to 9 paid holidays per year by Israeli law
+    grossBaseSalary: 6443.85,    // Official April 2026 Gross Salary
+    saturdayExtraRate: 440,      // Official April 2026 Rate per Saturday (440 NIS)
+    holidayExtraRate: 440,       // Official April 2026 Rate per Holiday (440 NIS)
+    vacationDayRate: 257.75,     // 257.75 NIS / day
+    convalescenceDayRate: 418,   // 418 NIS / day
+    defaultSaturdaysPerMonth: 1, 
+    legalHolidaysQuota: 9        
   }
 };

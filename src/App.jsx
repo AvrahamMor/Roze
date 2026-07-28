@@ -4,13 +4,14 @@ import HolidayCalendar from './components/HolidayCalendar';
 import ContractDetails from './components/ContractDetails';
 import PayslipReport from './components/PayslipReport';
 import LegalAgent from './components/LegalAgent';
-import { Calculator, Calendar, FileText, Printer, Bot, Sun, Moon, Sparkles, HeartHandshake } from 'lucide-react';
+import OfficialTerms2026 from './components/OfficialTerms2026';
+import { Calculator, Calendar, FileText, Printer, Bot, Sun, Moon, PiggyBank, HeartHandshake, Award } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('calculator'); // 'calculator' | 'calendar' | 'contract' | 'report' | 'legalAgent'
+  const [activeTab, setActiveTab] = useState('officialTerms'); // Default to new April 2026 terms & reserve fund tab
   const [theme, setTheme] = useState('dark');
   
-  // State for holiday selections (e.g. { 1: 'off', 5: 'worked' })
+  // State for holiday selections
   const [holidaySelections, setHolidaySelections] = useState({});
 
   // Toggle holiday selection
@@ -26,7 +27,6 @@ export default function App() {
     });
   };
 
-  // Count worked holidays to feed directly into the calculator
   const holidayWorkedCount = Object.values(holidaySelections).filter((val) => val === 'worked').length;
 
   const toggleTheme = () => {
@@ -51,16 +51,19 @@ export default function App() {
                 מערכת שכר וזכויות למטפלת | ביג'ילי ג'וזף
               </h1>
               <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                מעסיקה: מור רויטל | סוכנות: איתני מור
+                מעסיקה: מור רויטל | הסכם אפריל 2026
               </span>
             </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span className="badge badge-amber" style={{ fontSize: '0.8rem' }}>
+              <Award size={14} /> תנאים מעודכנים אפריל 2026
+            </span>
             <button 
               className="btn-secondary" 
               onClick={toggleTheme}
-              title="החלף ערכת נושא (כהה/בהירה)"
+              title="החלף ערכת נושא"
               style={{ padding: '8px 12px' }}
             >
               {theme === 'dark' ? <Sun size={18} style={{ color: 'var(--accent-amber)' }} /> : <Moon size={18} />}
@@ -74,6 +77,14 @@ export default function App() {
       <nav className="no-print" style={{ background: 'rgba(15,23,42,0.6)', borderBottom: '1px solid var(--border-color)', padding: '10px 20px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
           
+          <button
+            className={activeTab === 'officialTerms' ? 'btn-primary' : 'btn-secondary'}
+            onClick={() => setActiveTab('officialTerms')}
+            style={{ fontSize: '0.9rem', padding: '8px 16px', whiteSpace: 'nowrap', background: activeTab === 'officialTerms' ? 'var(--gradient-amber)' : 'transparent', border: activeTab === 'officialTerms' ? 'none' : '1px solid var(--accent-amber)' }}
+          >
+            <PiggyBank size={18} style={{ color: activeTab === 'officialTerms' ? '#fff' : 'var(--accent-amber)' }} /> 📑 תנאי העסקה 2026 & קופת עתודה
+          </button>
+
           <button
             className={activeTab === 'calculator' ? 'btn-primary' : 'btn-secondary'}
             onClick={() => setActiveTab('calculator')}
@@ -106,9 +117,9 @@ export default function App() {
           <button
             className={activeTab === 'legalAgent' ? 'btn-primary' : 'btn-secondary'}
             onClick={() => setActiveTab('legalAgent')}
-            style={{ fontSize: '0.9rem', padding: '8px 16px', whiteSpace: 'nowrap', border: activeTab === 'legalAgent' ? 'none' : '1px solid var(--accent-indigo)' }}
+            style={{ fontSize: '0.9rem', padding: '8px 16px', whiteSpace: 'nowrap' }}
           >
-            <Bot size={18} style={{ color: 'var(--accent-purple)' }} /> סוכן עדכוני חוק 2026
+            <Bot size={18} style={{ color: 'var(--accent-purple)' }} /> סוכן עדכוני חוק
           </button>
 
           <button
@@ -124,6 +135,7 @@ export default function App() {
 
       {/* Main App Content View Area */}
       <main style={{ flex: 1, maxWidth: '1200px', width: '100%', margin: '0 auto', padding: '24px 20px' }}>
+        {activeTab === 'officialTerms' && <OfficialTerms2026 />}
         {activeTab === 'calculator' && <SalaryCalculator holidayWorkedCount={holidayWorkedCount} />}
         {activeTab === 'calendar' && (
           <HolidayCalendar 
@@ -138,7 +150,7 @@ export default function App() {
 
       {/* Footer */}
       <footer className="no-print" style={{ borderTop: '1px solid var(--border-color)', padding: '20px', textAlign: 'center', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-        מערכת מותאמת אישית לניהול העסקת עובדים זרים בסיעוד © 2026 | מבוסס על דיני העבודה והסכם "איתני מור"
+        מערכת מותאמת אישית לפי מסמך תנאי העסקה אפריל 2026 - איתני מור © 2026
       </footer>
 
     </div>

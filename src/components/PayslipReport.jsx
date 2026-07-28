@@ -6,25 +6,24 @@ import { Printer, Download, CheckCircle, FileCheck } from 'lucide-react';
 export default function PayslipReport({ holidayWorkedCount = 0 }) {
   const [selectedMonthYear, setSelectedMonthYear] = useState('2026-07');
   
-  // Salary state calculations
-  const baseSalary = LEGAL_RULES.minimumMonthlySalary;
-  const saturdayExtra = 400; // 1 saturday
-  const holidayExtra = holidayWorkedCount * 400;
+  // April 2026 salary parameters
+  const grossBaseSalary = LEGAL_RULES.grossMonthlySalary; // 6,443.85 NIS
+  const saturdayExtra = 440; // 1 saturday @ 440 NIS
+  const holidayExtra = holidayWorkedCount * 440;
   
-  const grossSalary = baseSalary + saturdayExtra + holidayExtra;
+  const totalGrossSalary = grossBaseSalary + saturdayExtra + holidayExtra;
 
-  const employerPension = baseSalary * LEGAL_RULES.employerPensionRate;
-  const employerSeverance = baseSalary * LEGAL_RULES.employerSeveranceRate;
-  const employerSocialTotal = baseSalary * LEGAL_RULES.totalEmployerSocialRate;
-  const employerBituachLeumi = baseSalary * LEGAL_RULES.employerBituachLeumiRate;
+  const employerPension = LEGAL_RULES.minimumMonthlySalary * LEGAL_RULES.employerPensionRate; // 382.20
+  const employerSeverance = grossBaseSalary * LEGAL_RULES.employerSeveranceRate; // 536.77
+  const employerSocialTotal = employerPension + employerSeverance; // 918.97
+  const employerBituachLeumi = totalGrossSalary * LEGAL_RULES.employerBituachLeumiRate; // 3.6%
 
-  const workerPensionDeduction = baseSalary * LEGAL_RULES.workerPensionDeductionRate;
-  const healthDeduction = LEGAL_RULES.maxDeductions.healthInsurance;
+  const workerPensionDeduction = LEGAL_RULES.minimumMonthlySalary * LEGAL_RULES.workerPensionDeductionRate; // 352.80
+  const healthDeduction = LEGAL_RULES.maxDeductions.healthInsurance; // 154.20
   const housingDeduction = 300;
 
   const totalDeductions = workerPensionDeduction + healthDeduction + housingDeduction;
-  const netSalary = grossSalary - totalDeductions;
-  const totalEmployerCost = grossSalary + employerSocialTotal + employerBituachLeumi + (240 - healthDeduction);
+  const netSalary = totalGrossSalary - totalDeductions;
 
   const handlePrint = () => {
     window.print();
@@ -38,10 +37,10 @@ export default function PayslipReport({ holidayWorkedCount = 0 }) {
         <div>
           <h2 style={{ fontSize: '1.4rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
             <FileCheck style={{ color: 'var(--accent-emerald)' }} size={24} />
-            מחולל דוח תשלום חודשי ותלוש להדפסה
+            מחולל דוח תשלום חודשי ותלוש להדפסה (אפריל 2026)
           </h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginTop: '2px' }}>
-            הפקת אישור תשלום שכר מפורט להעברה לעובדת ולתיעוד המעסיק.
+            אישור תשלום שכר מפורט ומודפס לפי תנאי העסקה מעודכנים ברוטו 6,443.85 ₪.
           </p>
         </div>
 
@@ -78,7 +77,7 @@ export default function PayslipReport({ holidayWorkedCount = 0 }) {
               אישור תשלום שכר חודשי - עובדת זרה בסיעוד
             </h1>
             <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)', fontWeight: 600 }}>
-              חודש: {selectedMonthYear}
+              חודש: {selectedMonthYear} | לפי הסכם אפריל 2026
             </span>
           </div>
           <div style={{ textAlign: 'left', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
@@ -123,26 +122,26 @@ export default function PayslipReport({ holidayWorkedCount = 0 }) {
           </thead>
           <tbody>
             <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
-              <td style={{ padding: '10px' }}>שכר יסוד חודשי (שכר מינימום)</td>
+              <td style={{ padding: '10px' }}>משכורת חודשית ברוטו (אפריל 2026 כולל מקדמה 100₪/שבוע)</td>
               <td style={{ padding: '10px', textAlign: 'center' }}>משרה מלאה</td>
-              <td style={{ padding: '10px', textAlign: 'left', fontWeight: 700 }}>₪{baseSalary.toLocaleString()}</td>
+              <td style={{ padding: '10px', textAlign: 'left', fontWeight: 700 }}>₪{grossBaseSalary.toLocaleString()}</td>
             </tr>
             <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
-              <td style={{ padding: '10px' }}>תוספת עבודת שבת (מנוחה שבועית)</td>
-              <td style={{ padding: '10px', textAlign: 'center' }}>1 שבת × 400 ₪</td>
+              <td style={{ padding: '10px' }}>תוספת עבודת שבת (מנוחה שבועית - 25 שעות)</td>
+              <td style={{ padding: '10px', textAlign: 'center' }}>1 שבת × 440 ₪</td>
               <td style={{ padding: '10px', textAlign: 'left', fontWeight: 700 }}>₪{saturdayExtra}</td>
             </tr>
             {holidayWorkedCount > 0 && (
               <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
                 <td style={{ padding: '10px' }}>תוספת עבודה בחגים</td>
-                <td style={{ padding: '10px', textAlign: 'center' }}>{holidayWorkedCount} חגים × 400 ₪</td>
+                <td style={{ padding: '10px', textAlign: 'center' }}>{holidayWorkedCount} חגים × 440 ₪</td>
                 <td style={{ padding: '10px', textAlign: 'left', fontWeight: 700 }}>₪{holidayExtra}</td>
               </tr>
             )}
             <tr style={{ borderBottom: '2px solid var(--border-color)', fontWeight: 800, background: 'rgba(255,255,255,0.02)' }}>
               <td style={{ padding: '10px' }}>סה"כ שכר ברוטו:</td>
               <td style={{ padding: '10px' }}></td>
-              <td style={{ padding: '10px', textAlign: 'left', color: 'var(--accent-blue)' }}>₪{grossSalary.toLocaleString()}</td>
+              <td style={{ padding: '10px', textAlign: 'left', color: 'var(--accent-blue)' }}>₪{totalGrossSalary.toLocaleString()}</td>
             </tr>
           </tbody>
         </table>
@@ -154,7 +153,7 @@ export default function PayslipReport({ holidayWorkedCount = 0 }) {
         <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '24px', fontSize: '0.88rem' }}>
           <tbody>
             <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
-              <td style={{ padding: '8px' }}>ניכוי חלק עובדת לפנסיה (6%)</td>
+              <td style={{ padding: '8px' }}>ניכוי חלק עובדת לפנסיה (6% משכר מינימום)</td>
               <td style={{ padding: '8px', textAlign: 'left' }}>-₪{workerPensionDeduction.toFixed(2)}</td>
             </tr>
             <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
@@ -189,10 +188,11 @@ export default function PayslipReport({ holidayWorkedCount = 0 }) {
 
         {/* Employer Social Deposit Information */}
         <div style={{ background: 'rgba(99,102,241,0.08)', padding: '14px', borderRadius: 'var(--radius-md)', marginBottom: '36px', fontSize: '0.85rem', lineHeight: '1.5' }}>
-          <strong>הפרשות מעסיק לקופת פקדון / פנסיה וביטוח לאומי (אינו מנוכה מהעובדת):</strong>
+          <strong>הפרשות מעסיק לקופת פקדון / פנסיה וביטוח לאומי (לפי מסמך אפריל 2026):</strong>
           <ul style={{ paddingRight: '20px', marginTop: '4px' }}>
-            <li>הפקדה לפקדון עובדים זרים / פנסיה (12.5%): ₪{employerSocialTotal.toFixed(2)}</li>
-            <li>תשלום דמי ביטוח לאומי מעסיק (2%): ₪{employerBituachLeumi.toFixed(2)}</li>
+            <li>הפקדת פנסיה מעסיק (גמולים 6.5%): ₪{employerPension.toFixed(2)}</li>
+            <li>הפקדת פיצויי פיטורין (8.33%): ₪{employerSeverance.toFixed(2)}</li>
+            <li>תשלום דמי ביטוח לאומי מעסיק (3.6%): ₪{employerBituachLeumi.toFixed(2)}</li>
           </ul>
         </div>
 

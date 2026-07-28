@@ -4,18 +4,18 @@ import { CONTRACT_DATA } from '../data/contractData';
 import { Calculator, DollarSign, Shield, Info, CheckCircle2, AlertCircle, RefreshCw, Layers } from 'lucide-react';
 
 export default function SalaryCalculator({ holidayWorkedCount = 0 }) {
-  // State variables for monthly calculation
-  const [baseSalary, setBaseSalary] = useState(LEGAL_RULES.minimumMonthlySalary);
+  // State variables for monthly calculation - April 2026 document defaults
+  const [grossSalaryBase, setGrossSalaryBase] = useState(LEGAL_RULES.grossMonthlySalary); // 6,443.85 NIS
   const [saturdaysCount, setSaturdaysCount] = useState(CONTRACT_DATA.agreedRates.defaultSaturdaysPerMonth);
-  const [saturdayRate, setSaturdayRate] = useState(CONTRACT_DATA.agreedRates.saturdayExtraRate);
+  const [saturdayRate, setSaturdayRate] = useState(LEGAL_RULES.saturdayExtraRate); // 440 NIS
   
   const [holidaysCount, setHolidaysCount] = useState(holidayWorkedCount);
-  const [holidayRate, setHolidayRate] = useState(CONTRACT_DATA.agreedRates.holidayExtraRate);
+  const [holidayRate, setHolidayRate] = useState(LEGAL_RULES.holidayExtraRate); // 440 NIS
 
-  const [healthInsuranceTotal, setHealthInsuranceTotal] = useState(240); // 240 NIS total health insurance cost
+  const [healthInsuranceTotal, setHealthInsuranceTotal] = useState(240); 
   const [healthInsuranceDeduction, setHealthInsuranceDeduction] = useState(LEGAL_RULES.maxDeductions.healthInsurance);
   
-  const [housingDeduction, setHousingDeduction] = useState(300); // Housing & utilities allowed deduction
+  const [housingDeduction, setHousingDeduction] = useState(300); 
   const [includeWorkerPensionDeduction, setIncludeWorkerPensionDeduction] = useState(true);
 
   // Synchronize when holiday count updates from calendar tab
@@ -29,28 +29,28 @@ export default function SalaryCalculator({ holidayWorkedCount = 0 }) {
   const saturdayExtraTotal = saturdaysCount * saturdayRate;
   const holidayExtraTotal = holidaysCount * holidayRate;
   
-  // Gross salary before deductions
-  const grossSalary = baseSalary + saturdayExtraTotal + holidayExtraTotal;
+  // Total Gross salary (Base gross + extra Saturdays + extra Holidays)
+  const totalGrossSalary = grossSalaryBase + saturdayExtraTotal + holidayExtraTotal;
 
-  // Employer Contributions (עלויות מעסיק נוספות)
-  const employerPension = baseSalary * LEGAL_RULES.employerPensionRate; // 6.5%
-  const employerSeverance = baseSalary * LEGAL_RULES.employerSeveranceRate; // 6.0%
-  const employerSocialTotal = baseSalary * LEGAL_RULES.totalEmployerSocialRate; // 12.5%
+  // Employer Contributions (עלויות מעסיק נוספות לפי מסמך אפריל 2026)
+  const employerPension = LEGAL_RULES.minimumMonthlySalary * LEGAL_RULES.employerPensionRate; // 6.5% of min wage = 382.20 NIS
+  const employerSeverance = grossSalaryBase * LEGAL_RULES.employerSeveranceRate; // 8.33% of gross = 536.77 NIS
+  const employerSocialTotal = employerPension + employerSeverance; 
   
-  const employerBituachLeumi = baseSalary * LEGAL_RULES.employerBituachLeumiRate; // 2.0%
+  const employerBituachLeumi = totalGrossSalary * LEGAL_RULES.employerBituachLeumiRate; // 3.6% of gross (April 2026 doc)
   
-  // Employer Health Insurance Net Cost (Total insurance minus worker deduction portion)
+  // Employer Health Insurance Net Cost
   const netEmployerHealthInsurance = Math.max(0, healthInsuranceTotal - healthInsuranceDeduction);
 
   // Total Employer Monthly Cost (עלות מעביד כוללת)
-  const totalEmployerMonthlyCost = grossSalary + employerSocialTotal + employerBituachLeumi + netEmployerHealthInsurance;
+  const totalEmployerMonthlyCost = totalGrossSalary + employerSocialTotal + employerBituachLeumi + netEmployerHealthInsurance;
 
   // Worker Salary Deductions (ניכויים משכר העובדת)
-  const workerPensionDeduction = includeWorkerPensionDeduction ? (baseSalary * LEGAL_RULES.workerPensionDeductionRate) : 0;
+  const workerPensionDeduction = includeWorkerPensionDeduction ? (LEGAL_RULES.minimumMonthlySalary * LEGAL_RULES.workerPensionDeductionRate) : 0;
   const totalWorkerDeductions = workerPensionDeduction + healthInsuranceDeduction + housingDeduction;
 
   // Net Cash Salary to Employee (שכר נטו לתשלום לעובדת)
-  const netWorkerSalary = Math.max(0, grossSalary - totalWorkerDeductions);
+  const netWorkerSalary = Math.max(0, totalGrossSalary - totalWorkerDeductions);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -60,18 +60,18 @@ export default function SalaryCalculator({ holidayWorkedCount = 0 }) {
           <div>
             <h2 style={{ fontSize: '1.6rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '10px' }}>
               <Calculator style={{ color: 'var(--accent-blue)' }} size={28} />
-              מחשבון שכר ועלות מעסיק חודשית
+              מחשבון שכר ועלות מעסיק חודשית (מעודכן אפריל 2026)
             </h2>
             <p style={{ color: 'var(--text-muted)', marginTop: '4px' }}>
-              חישוב מדויק לפי חוקי מדינת ישראל לעובדים זרים בסיעוד והסכם ההעסקה של ביג'ילי ג'וזף.
+              חישוב מבוסס על מסמך "תנאי העסקה אפריל 2026": ברוטו 6,443.85 ₪, שבת/חג 440 ₪, ביטוח לאומי 3.6%.
             </p>
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <span className="badge badge-emerald">
-              <CheckCircle2 size={14} /> שכר מינימום עדכני 2026
+              <CheckCircle2 size={14} /> ברוטו 6,443.85 ₪
             </span>
-            <span className="badge badge-blue">
-              <Shield size={14} /> 12.5% פנסיה/פיקודן
+            <span className="badge badge-amber">
+              <Shield size={14} /> שבת/חג 440 ₪
             </span>
           </div>
         </div>
@@ -84,25 +84,25 @@ export default function SalaryCalculator({ holidayWorkedCount = 0 }) {
         <div className="glass-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <h3 style={{ fontSize: '1.2rem', fontWeight: 700, borderBottom: '1px solid var(--border-color)', pb: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Layers size={20} style={{ color: 'var(--accent-indigo)' }} />
-            פרמטרים ונתוני שכר
+            פרמטרים ונתוני שכר (אפריל 2026)
           </h3>
 
-          {/* Base Salary */}
+          {/* Base Gross Salary */}
           <div>
             <label style={{ display: 'block', fontWeight: 600, marginBottom: '6px', fontSize: '0.9rem' }}>
-              שכר יסוד חודשי (שכר מינימום בחוק)
+              שכר חודשי ברוטו (לפי מסמך תנאי העסקה)
             </label>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <input 
                 type="number" 
-                value={baseSalary} 
-                onChange={(e) => setBaseSalary(Number(e.target.value))} 
-                step="50"
+                value={grossSalaryBase} 
+                onChange={(e) => setGrossSalaryBase(Number(e.target.value))} 
+                step="10"
               />
               <span style={{ fontWeight: 700, color: 'var(--text-muted)' }}>₪</span>
             </div>
             <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '4px', display: 'block' }}>
-              שכר המינימום בחוק לעובד זר במשרה מלאה: 5,880.02 ₪
+              מבוסס על מסמך אפריל 2026: 6,443.85 ₪ (כולל מקדמה שבועית 100 ₪)
             </span>
           </div>
 
@@ -110,9 +110,9 @@ export default function SalaryCalculator({ holidayWorkedCount = 0 }) {
           <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
               <label style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--accent-amber)' }}>
-                עבודת שבת (מנוחה שבועית)
+                עבודת שבת (מנוחה שבועית - 25 שעות)
               </label>
-              <span className="badge badge-amber">+400 ₪ לשבת</span>
+              <span className="badge badge-amber">+440 ₪ לשבת</span>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
               <div>
@@ -144,7 +144,7 @@ export default function SalaryCalculator({ holidayWorkedCount = 0 }) {
               <label style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--accent-purple)' }}>
                 עבודה בחגים (תוספת חג)
               </label>
-              <span className="badge badge-purple">+400 ₪ לחג</span>
+              <span className="badge badge-purple">+440 ₪ לחג</span>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
               <div>
@@ -213,7 +213,7 @@ export default function SalaryCalculator({ holidayWorkedCount = 0 }) {
                   style={{ width: '18px', height: '18px', cursor: 'pointer' }}
                 />
                 <label htmlFor="pensionCheck" style={{ fontSize: '0.85rem', cursor: 'pointer' }}>
-                  ניכוי חלק עובדת לפנסיה (6% = { (baseSalary * 0.06).toFixed(2) } ₪)
+                  ניכוי חלק עובדת לפנסיה (6% משכר מינימום = { (LEGAL_RULES.minimumMonthlySalary * 0.06).toFixed(2) } ₪)
                 </label>
               </div>
             </div>
@@ -226,7 +226,7 @@ export default function SalaryCalculator({ holidayWorkedCount = 0 }) {
           {/* TOTAL COST CARD FOR EMPLOYER */}
           <div className="glass-card" style={{ padding: '24px', background: 'linear-gradient(135deg, rgba(30,41,59,0.9), rgba(15,23,42,0.95))', border: '1.5px solid var(--accent-blue)', boxShadow: 'var(--shadow-glow)' }}>
             <span style={{ textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-blue)' }}>
-              סיכום כולל חודשי
+              סיכום כולל חודשי (אפריל 2026)
             </span>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '8px', marginBottom: '16px' }}>
               <div>
@@ -234,7 +234,7 @@ export default function SalaryCalculator({ holidayWorkedCount = 0 }) {
                   סה"כ עלות חודשית כוללת למעסיק
                 </h3>
                 <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                  (שכר ברוטו + פנסיה/פיצויים + ביטוח לאומי + חלק מעסיק בביטוח)
+                  (שכר ברוטו + פנסיה/פיצויים + ביטוח לאומי 3.6% + ביטוח בריאות)
                 </span>
               </div>
               <div style={{ textBaseline: 'bottom' }}>
@@ -270,25 +270,25 @@ export default function SalaryCalculator({ holidayWorkedCount = 0 }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {/* Pension 6.5% */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.9rem' }}>
-                <span>פנסיה מעסיק (גמולים 6.5%):</span>
+                <span>פנסיה מעסיק (גמולים 6.5% משכר מינימום):</span>
                 <span style={{ fontWeight: 700 }}>₪{employerPension.toFixed(2)}</span>
               </div>
 
-              {/* Severance 6.0% */}
+              {/* Severance 8.33% */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.9rem' }}>
-                <span>פיצויים מעסיק (6.0%):</span>
+                <span>פיצויי פיטורין מעסיק (8.33% מהברוטו):</span>
                 <span style={{ fontWeight: 700 }}>₪{employerSeverance.toFixed(2)}</span>
               </div>
 
-              {/* Total Social Deposit 12.5% */}
+              {/* Total Social Deposit */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: 'rgba(99, 102, 241, 0.1)', borderRadius: 'var(--radius-sm)', borderRight: '3px solid var(--accent-indigo)', fontSize: '0.92rem', fontWeight: 700 }}>
-                <span>סה"כ להפקדה חודשית (פנסיה + פיצויים 12.5%):</span>
+                <span>סה"כ להפקדה חודשית לקופה/פקדון (פנסיה + פיצויים):</span>
                 <span style={{ color: 'var(--accent-indigo)' }}>₪{employerSocialTotal.toFixed(2)}</span>
               </div>
 
-              {/* Bituach Leumi 2% */}
+              {/* Bituach Leumi 3.6% */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.9rem' }}>
-                <span>ביטוח לאומי מעסיק (2.0% מול המוסד לביטוח לאומי):</span>
+                <span>ביטוח לאומי מעסיק (3.6% מהברוטו לפי מסמך אפריל 2026):</span>
                 <span style={{ fontWeight: 700, color: 'var(--accent-blue)' }}>₪{employerBituachLeumi.toFixed(2)}</span>
               </div>
 
@@ -332,14 +332,14 @@ export default function SalaryCalculator({ holidayWorkedCount = 0 }) {
       {/* Visual Cost Distribution Bar */}
       <div className="glass-card" style={{ padding: '20px' }}>
         <h4 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '12px' }}>
-          התפלגות ויזואלית של עלות המעסיק החודשית
+          התפלגות ויזואלית של עלות המעסיק החודשית (אפריל 2026)
         </h4>
         <div style={{ width: '100%', height: '24px', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', overflow: 'hidden', display: 'flex' }}>
-          <div style={{ width: `${(netWorkerSalary / totalEmployerMonthlyCost) * 100}%`, background: 'var(--accent-emerald)', title: 'נטו לעובדת' }} />
-          <div style={{ width: `${(employerSocialTotal / totalEmployerMonthlyCost) * 100}%`, background: 'var(--accent-indigo)', title: 'פנסיה ופיצויים' }} />
-          <div style={{ width: `${(employerBituachLeumi / totalEmployerMonthlyCost) * 100}%`, background: 'var(--accent-blue)', title: 'ביטוח לאומי' }} />
-          <div style={{ width: `${(saturdayExtraTotal / totalEmployerMonthlyCost) * 100}%`, background: 'var(--accent-amber)', title: 'שבתות' }} />
-          <div style={{ width: `${(holidayExtraTotal / totalEmployerMonthlyCost) * 100}%`, background: 'var(--accent-purple)', title: 'חגים' }} />
+          <div style={{ width: `${(netWorkerSalary / totalEmployerMonthlyCost) * 100}%`, background: 'var(--accent-emerald)' }} />
+          <div style={{ width: `${(employerSocialTotal / totalEmployerMonthlyCost) * 100}%`, background: 'var(--accent-indigo)' }} />
+          <div style={{ width: `${(employerBituachLeumi / totalEmployerMonthlyCost) * 100}%`, background: 'var(--accent-blue)' }} />
+          <div style={{ width: `${(saturdayExtraTotal / totalEmployerMonthlyCost) * 100}%`, background: 'var(--accent-amber)' }} />
+          <div style={{ width: `${(holidayExtraTotal / totalEmployerMonthlyCost) * 100}%`, background: 'var(--accent-purple)' }} />
         </div>
 
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '12px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
@@ -349,19 +349,15 @@ export default function SalaryCalculator({ holidayWorkedCount = 0 }) {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--accent-indigo)' }} />
-            פנסיה/פיצויים (12.5%): {Math.round((employerSocialTotal / totalEmployerMonthlyCost) * 100)}%
+            פנסיה/פיצויים (14%): {Math.round((employerSocialTotal / totalEmployerMonthlyCost) * 100)}%
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--accent-blue)' }} />
-            ביטוח לאומי (2%): {Math.round((employerBituachLeumi / totalEmployerMonthlyCost) * 100)}%
+            ביטוח לאומי (3.6%): {Math.round((employerBituachLeumi / totalEmployerMonthlyCost) * 100)}%
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--accent-amber)' }} />
             תוספת שבת: {Math.round((saturdayExtraTotal / totalEmployerMonthlyCost) * 100)}%
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--accent-purple)' }} />
-            תוספת חגים: {Math.round((holidayExtraTotal / totalEmployerMonthlyCost) * 100)}%
           </div>
         </div>
       </div>
