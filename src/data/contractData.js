@@ -7,6 +7,7 @@ export const CONTRACT_DATA = {
     countryOfOrigin: "הודו (India)",
     dateOfBirth: "14/10/1988",
     placementDate: "20/07/2026",
+    startDateIso: "2026-07-20",
     visaType: "עובד זר בסיעוד (ב-1)",
     workPermitValidUntil: "31/05/2030",
     permitNumber: "46137071"
@@ -35,6 +36,8 @@ export const CONTRACT_DATA = {
     vacationDayRate: 257.75,     // 257.75 NIS / day
     convalescenceDayRate: 418,   // 418 NIS / day
     defaultSaturdaysPerMonth: 1, 
-    legalHolidaysQuota: 9        
+    legalHolidaysQuota: 9,       // Full annual quota
+    proRatedHolidays2026: 4,     // Pro-rated quota for 2026 (From July 20, 2026 to Dec 31, 2026)
+    annualVacationDaysPerYear: 14 // 1.166 days per month for years 1-5
   }
 };

@@ -1,0 +1,18 @@
+{
+  "short_name": "Roze שכר",
+  "name": "מערכת ניהול שכר וזכויות למטפלת | Roze",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0f172a",
+  "theme_color": "#3b82f6",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "dir": "rtl",
+  "lang": "he"
+}

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { LEGAL_RULES } from '../data/legalRules';
-import { PiggyBank, FileText, ShieldAlert, Award, Clock, Coins, CheckCircle, Calculator, Info } from 'lucide-react';
+import { PiggyBank, FileText, ShieldAlert, Award, Clock, Coins, CheckCircle, Calculator, Info, Sparkles, TrendingUp } from 'lucide-react';
 
 export default function OfficialTerms2026() {
   const [seniorityYears, setSeniorityYears] = useState(1); // Default Year 1
   const [severanceType, setSeveranceType] = useState('dismissal'); // 'dismissal' (8.33%) | 'resignation' (6%)
 
-  // Calculation parameters based on April 2026 document
+  // Calculation parameters based on official 2026 terms
   const grossSalary = LEGAL_RULES.grossMonthlySalary; // 6,443.85
   const baseMinimumWage = LEGAL_RULES.minimumMonthlySalary; // 5,880.02
 
@@ -52,33 +52,42 @@ export default function OfficialTerms2026() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       
       {/* Header Banner */}
-      <div className="glass-card" style={{ padding: '24px', background: 'linear-gradient(135deg, rgba(245,158,11,0.15), rgba(99,102,241,0.15))', borderColor: 'var(--accent-amber)' }}>
+      <div className="glass-card" style={{ 
+        padding: '24px 28px', 
+        background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(99, 102, 241, 0.12))', 
+        borderColor: 'rgba(245, 158, 11, 0.35)' 
+      }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
           <div>
-            <h2 style={{ fontSize: '1.6rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <h2 style={{ fontSize: '1.65rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}>
               <FileText style={{ color: 'var(--accent-amber)' }} size={28} />
-              תנאי העסקה מעודכנים - אפריל 2026 (מסמך רשמי)
+              תנאי העסקה מעודכנים – הסכם 2026 (מסמך רשמי)
             </h2>
-            <p style={{ color: 'var(--text-muted)', marginTop: '4px' }}>
+            <p style={{ color: 'var(--text-muted)', marginTop: '6px', fontSize: '0.92rem' }}>
               פירוט מלא של כל הסכומים, ערכי הימים, דמי הבראה, חופשות, וחישוב מדויק של <strong>כמה כסף לשים בצד מדי חודש</strong>.
             </p>
           </div>
 
-          <span className="badge badge-amber" style={{ fontSize: '0.9rem', padding: '8px 16px' }}>
-            <Award size={18} /> מסמך תנאים אפריל 2026
+          <span className="badge badge-amber" style={{ fontSize: '0.85rem', padding: '6px 16px' }}>
+            <Award size={16} /> תנאים בתוקף 2026
           </span>
         </div>
       </div>
 
       {/* RESERVE FUND CALCULATOR (כמה לשים בצד מדי חודש) */}
-      <div className="glass-card" style={{ padding: '24px', border: '1.5px solid var(--accent-amber)', background: 'linear-gradient(135deg, rgba(30,41,59,0.95), rgba(15,23,42,0.98))', boxShadow: 'var(--shadow-glow)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', borderBottom: '1px solid var(--border-color)', pb: '16px', marginBottom: '20px' }}>
+      <div className="glass-card" style={{ 
+        padding: '26px', 
+        border: '1.5px solid rgba(245, 158, 11, 0.4)', 
+        background: 'var(--gradient-card-hero)', 
+        boxShadow: 'var(--shadow-md)' 
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', borderBottom: '1px solid var(--border-color)', paddingBottom: '16px', marginBottom: '20px' }}>
           <div>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--accent-amber)', display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <PiggyBank size={30} style={{ color: 'var(--accent-amber)' }} />
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--accent-amber)', display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}>
+              <PiggyBank size={28} style={{ color: 'var(--accent-amber)' }} />
               קופת עתודה: כמה כסף המעסיק צריך לשים בצד מדי חודש?
             </h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginTop: '2px' }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginTop: '4px' }}>
               חישוב ההפרשות, הזכויות הסוציאליות, והתשלומים התקופתיים כדי למנוע הפתעות וחובות בסיום ההעסקה.
             </p>
           </div>
@@ -86,11 +95,11 @@ export default function OfficialTerms2026() {
           {/* Controls: Seniority & Severance type */}
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             <div>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block' }}>וותק העובדת:</span>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px', fontWeight: 600 }}>וותק העובדת:</span>
               <select 
                 value={seniorityYears} 
                 onChange={(e) => setSeniorityYears(Number(e.target.value))}
-                style={{ padding: '6px 12px', fontSize: '0.85rem' }}
+                style={{ padding: '6px 14px', fontSize: '0.85rem', minHeight: '38px' }}
               >
                 <option value={1}>שנה 1 (14 ימי חופשה, 5 ימי הבראה)</option>
                 <option value={2}>שנים 2-3 (14 ימי חופשה, 6 ימי הבראה)</option>
@@ -101,11 +110,11 @@ export default function OfficialTerms2026() {
             </div>
 
             <div>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block' }}>שיעור פיצויים:</span>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px', fontWeight: 600 }}>שיעור פיצויים:</span>
               <select 
                 value={severanceType} 
                 onChange={(e) => setSeveranceType(e.target.value)}
-                style={{ padding: '6px 12px', fontSize: '0.85rem' }}
+                style={{ padding: '6px 14px', fontSize: '0.85rem', minHeight: '38px' }}
               >
                 <option value="dismissal">פיטורין (8.33% מתוך 6,443.85 ₪)</option>
                 <option value="resignation">התפטרות (6.0% מתוך 6,443.85 ₪)</option>
@@ -115,9 +124,19 @@ export default function OfficialTerms2026() {
         </div>
 
         {/* Big Summary Badge */}
-        <div style={{ background: 'rgba(245, 158, 11, 0.12)', border: '1px solid rgba(245, 158, 11, 0.4)', padding: '20px', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <div style={{ 
+          background: 'rgba(245, 158, 11, 0.12)', 
+          border: '1.5px solid rgba(245, 158, 11, 0.4)', 
+          padding: '20px 24px', 
+          borderRadius: 'var(--radius-lg)', 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center', 
+          marginBottom: '24px',
+          boxShadow: '0 4px 20px rgba(245, 158, 11, 0.12)'
+        }}>
           <div>
-            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-amber)', textTransform: 'uppercase' }}>
+            <span style={{ fontSize: '0.88rem', fontWeight: 800, color: 'var(--accent-amber)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
               סה"כ כסף מומלץ לשים בצד מדי חודש (קופת עתודה סוציאלית)
             </span>
             <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '2px' }}>
@@ -125,8 +144,8 @@ export default function OfficialTerms2026() {
             </div>
           </div>
 
-          <div style={{ fontSize: '2.4rem', fontWeight: 800, color: 'var(--accent-amber)' }}>
-            ₪{Math.round(totalMonthlyReserveNeeded).toLocaleString()} <span style={{ fontSize: '1rem', color: 'var(--text-muted)' }}>/ חודש</span>
+          <div style={{ fontSize: '2.5rem', fontWeight: 800, fontFamily: 'Plus Jakarta Sans', letterSpacing: '-0.5px' }} className="text-gradient-amber">
+            ₪{Math.round(totalMonthlyReserveNeeded).toLocaleString()} <span style={{ fontSize: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>/ חודש</span>
           </div>
         </div>
 
@@ -135,94 +154,87 @@ export default function OfficialTerms2026() {
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
             <thead>
               <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)' }}>
-                <th style={{ padding: '10px', textAlign: 'right' }}>רכיב עתודה / הפרשה</th>
-                <th style={{ padding: '10px', textAlign: 'center' }}>בסיס חישוב / נוסחה בחוק</th>
-                <th style={{ padding: '10px', textAlign: 'left' }}>סכום חודשי לשים בצד (₪)</th>
+                <th style={{ padding: '12px', textAlign: 'right' }}>רכיב עתודה / הפרשה</th>
+                <th style={{ padding: '12px', textAlign: 'center' }}>בסיס חישוב / נוסחה בחוק</th>
+                <th style={{ padding: '12px', textAlign: 'left' }}>סכום חודשי לשים בצד (₪)</th>
               </tr>
             </thead>
             <tbody>
-              {/* Severance */}
               <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
-                <td style={{ padding: '12px' }}>
-                  <strong>פיצויי פיטורין / התפטרות</strong>
+                <td style={{ padding: '12px', fontWeight: 700 }}>
+                  1. פיצויי פיטורין ({severanceType === 'dismissal' ? '8.33%' : '6.0%'})
                 </td>
                 <td style={{ padding: '12px', textAlign: 'center', color: 'var(--text-muted)' }}>
-                  {severanceType === 'dismissal' ? '8.33%' : '6.0%'} מתוך ברוטו 6,443.85 ₪
+                  {severanceType === 'dismissal' ? '8.33% × 6,443.85 ₪' : '6.0% × 6,443.85 ₪'}
                 </td>
                 <td style={{ padding: '12px', textAlign: 'left', fontWeight: 700, color: 'var(--accent-amber)' }}>
                   ₪{monthlySeveranceReserve.toFixed(2)}
                 </td>
               </tr>
 
-              {/* Pension */}
               <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
-                <td style={{ padding: '12px' }}>
-                  <strong>פנסיה מעסיק (גמולים)</strong>
+                <td style={{ padding: '12px', fontWeight: 700 }}>
+                  2. פנסיה מעסיק (גמולים 6.5%)
                 </td>
                 <td style={{ padding: '12px', textAlign: 'center', color: 'var(--text-muted)' }}>
-                  6.5% מתוך שכר מינימום 5,880.02 ₪
+                  6.5% × 5,880.02 ₪ (שכר מינימום)
                 </td>
                 <td style={{ padding: '12px', textAlign: 'left', fontWeight: 700, color: 'var(--accent-indigo)' }}>
                   ₪{monthlyPensionReserve.toFixed(2)}
                 </td>
               </tr>
 
-              {/* Convalescence */}
               <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
-                <td style={{ padding: '12px' }}>
-                  <strong>דמי הבראה (צבירה חודשית)</strong>
+                <td style={{ padding: '12px', fontWeight: 700 }}>
+                  3. דמי הבראה ({convalescenceDays} ימים בשנה)
                 </td>
                 <td style={{ padding: '12px', textAlign: 'center', color: 'var(--text-muted)' }}>
-                  {convalescenceDays} ימים בשנה × 418 ₪ = ₪{annualConvalescenceCost} לשנה
+                  ({convalescenceDays} ימים × 418 ₪) ÷ 12 חודשים
                 </td>
-                <td style={{ padding: '12px', textAlign: 'left', fontWeight: 700, color: 'var(--accent-emerald)' }}>
+                <td style={{ padding: '12px', textAlign: 'left', fontWeight: 700 }}>
                   ₪{monthlyConvalescenceReserve.toFixed(2)}
                 </td>
               </tr>
 
-              {/* Vacation Accrual */}
               <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
-                <td style={{ padding: '12px' }}>
-                  <strong>פדיון ימי חופשה שנתית (צבירה)</strong>
+                <td style={{ padding: '12px', fontWeight: 700 }}>
+                  4. צבירת חופשה שנתית ({vacationDays} ימים)
                 </td>
                 <td style={{ padding: '12px', textAlign: 'center', color: 'var(--text-muted)' }}>
-                  {vacationDays} ימים בשנה × 257.75 ₪ = ₪{annualVacationCost} לשנה
+                  ({vacationDays} ימים × 257.75 ₪) ÷ 12 חודשים
                 </td>
-                <td style={{ padding: '12px', textAlign: 'left', fontWeight: 700, color: 'var(--accent-purple)' }}>
+                <td style={{ padding: '12px', textAlign: 'left', fontWeight: 700 }}>
                   ₪{monthlyVacationReserve.toFixed(2)}
                 </td>
               </tr>
 
-              {/* Bituach Leumi */}
               <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
-                <td style={{ padding: '12px' }}>
-                  <strong>דמי ביטוח לאומי מעסיק</strong>
+                <td style={{ padding: '12px', fontWeight: 700 }}>
+                  5. ביטוח לאומי מעסיק (3.6%)
                 </td>
                 <td style={{ padding: '12px', textAlign: 'center', color: 'var(--text-muted)' }}>
-                  3.6% מתוך ברוטו 6,443.85 ₪ (לפי מסמך אפריל 2026)
+                  3.6% × 6,443.85 ₪
                 </td>
                 <td style={{ padding: '12px', textAlign: 'left', fontWeight: 700, color: 'var(--accent-blue)' }}>
                   ₪{monthlyBituachLeumi.toFixed(2)}
                 </td>
               </tr>
 
-              {/* Agency monthly fee */}
               <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
-                <td style={{ padding: '12px' }}>
-                  <strong>דמי ליווי תאגיד חודשיים (איתני מור)</strong>
+                <td style={{ padding: '12px', fontWeight: 700 }}>
+                  6. דמי טיפול חודשיים לתאגיד/לשכה
                 </td>
                 <td style={{ padding: '12px', textAlign: 'center', color: 'var(--text-muted)' }}>
-                  70 ₪ לחודש (840 ₪ לשנה)
+                  70 ₪ בחודש (איתני מור)
                 </td>
                 <td style={{ padding: '12px', textAlign: 'left', fontWeight: 700 }}>
                   ₪{monthlyAgencyFee.toFixed(2)}
                 </td>
               </tr>
 
-              {/* Annual Permit Fee */}
               <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
-                <td style={{ padding: '12px' }}>
-                  <strong>אגרת היתר העסקה שנתית (חלק חודשי)</strong>
+                <td style={{ padding: '12px', fontWeight: 700 }}>
+                  7. אגרת אשרת עבודה שנתית (ויזה)
                 </td>
                 <td style={{ padding: '12px', textAlign: 'center', color: 'var(--text-muted)' }}>
                   370 ₪ לשנה ÷ 12 חודשים
@@ -232,11 +244,14 @@ export default function OfficialTerms2026() {
                 </td>
               </tr>
 
-              {/* TOTAL */}
-              <tr style={{ fontWeight: 800, background: 'rgba(255,255,255,0.05)', fontSize: '1rem' }}>
-                <td style={{ padding: '14px' }}>סה"כ עתודה חודשית כוללת למעסיק:</td>
-                <td style={{ padding: '14px' }}></td>
-                <td style={{ padding: '14px', textAlign: 'left', color: 'var(--accent-amber)' }}>
+              <tr style={{ background: 'rgba(245, 158, 11, 0.1)', fontWeight: 800, fontSize: '1.05rem' }}>
+                <td style={{ padding: '14px', color: 'var(--accent-amber)' }}>
+                  סה"כ קופת עתודה חודשית לשים בצד:
+                </td>
+                <td style={{ padding: '14px', textAlign: 'center' }}>
+                  (ללא תשלום השכר השוטף)
+                </td>
+                <td style={{ padding: '14px', textAlign: 'left', color: 'var(--accent-amber)', fontSize: '1.2rem', fontFamily: 'Plus Jakarta Sans' }}>
                   ₪{totalMonthlyReserveNeeded.toFixed(2)}
                 </td>
               </tr>
@@ -245,70 +260,88 @@ export default function OfficialTerms2026() {
         </div>
       </div>
 
-      {/* FULL CLAUSES BREAKDOWN FROM APRIL 2026 DOCUMENT */}
-      <div className="glass-card" style={{ padding: '24px' }}>
-        <h3 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '18px', color: 'var(--accent-blue)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Info size={22} />
-          עיקרי התנאים המלאים מתוך קובץ "אפריל 2026"
-        </h3>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px', fontSize: '0.9rem' }}>
-          
-          {/* Box 1: Rates */}
-          <div style={{ background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: 'var(--radius-md)', borderRight: '3px solid var(--accent-amber)' }}>
-            <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--accent-amber)', marginBottom: '8px' }}>
-              💰 תעריפי שבת, חגים וחופשה (מעודכן)
-            </h4>
-            <ul style={{ paddingRight: '18px', display: 'flex', flexDirection: 'column', gap: '6px', color: 'var(--text-main)' }}>
-              <li><strong>משכורת חודשית ברוטו:</strong> 6,443.85 ₪ (כולל מקדמה שבועית 100 ₪).</li>
-              <li><strong>יום חופשה שבועית (שבת - 25 שעות):</strong> 440 ₪.</li>
-              <li><strong>יום חג (מתוך 9 חגים בשנה):</strong> 440 ₪.</li>
-              <li><strong>ערך יום חופשה שנתית:</strong> 257.75 ₪ / יום.</li>
-              <li><strong>ערך יום הבראה:</strong> 418 ₪ / יום.</li>
-            </ul>
+      {/* ALL VALUES MASTER REFERENCE GRID */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+        
+        {/* Salary & Overtime Rates Card */}
+        <div className="glass-card" style={{ padding: '22px' }}>
+          <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--accent-cyan)', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Coins size={20} /> תעריפי שכר ושעות נוספות (2026)
+          </h4>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.88rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
+              <span style={{ color: 'var(--text-muted)' }}>שכר חודשי ברוטו מלא:</span>
+              <strong style={{ fontFamily: 'Plus Jakarta Sans' }}>6,443.85 ₪</strong>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
+              <span style={{ color: 'var(--text-muted)' }}>שכר מינימום בסיס:</span>
+              <strong style={{ fontFamily: 'Plus Jakarta Sans' }}>5,880.02 ₪</strong>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
+              <span style={{ color: 'var(--text-muted)' }}>ערך יום עבודה (חופשה):</span>
+              <strong style={{ color: 'var(--accent-cyan)', fontFamily: 'Plus Jakarta Sans' }}>257.75 ₪</strong>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
+              <span style={{ color: 'var(--text-muted)' }}>תעריף שבת (25 שעות):</span>
+              <strong style={{ color: 'var(--accent-amber)', fontFamily: 'Plus Jakarta Sans' }}>440.00 ₪</strong>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: 'var(--text-muted)' }}>תעריף עבודה בחג:</span>
+              <strong style={{ color: 'var(--accent-purple)', fontFamily: 'Plus Jakarta Sans' }}>440.00 ₪</strong>
+            </div>
           </div>
-
-          {/* Box 2: Sick Leave */}
-          <div style={{ background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: 'var(--radius-md)', borderRight: '3px solid var(--accent-rose)' }}>
-            <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--accent-rose)', marginBottom: '8px' }}>
-              🏥 דמי מחלה וצבירה
-            </h4>
-            <ul style={{ paddingRight: '18px', display: 'flex', flexDirection: 'column', gap: '6px', color: 'var(--text-main)' }}>
-              <li><strong>צבירת ימי מחלה:</strong> 1.5 ימים לכל חודש עבודה (עד מקסימום 90 יום).</li>
-              <li><strong>יום מחלה 1:</strong> ללא תשלום.</li>
-              <li><strong>ימים 2 ו-3:</strong> 50% משכר העבודה היומי.</li>
-              <li><strong>יום 4 ואילך:</strong> 100% משכר העבודה היומי.</li>
-            </ul>
-          </div>
-
-          {/* Box 3: Advance Notice */}
-          <div style={{ background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: 'var(--radius-md)', borderRight: '3px solid var(--accent-cyan)' }}>
-            <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--accent-cyan)', marginBottom: '8px' }}>
-              ⏱️ הודעה מוקדמת לפיטורין / התפטרות
-            </h4>
-            <ul style={{ paddingRight: '18px', display: 'flex', flexDirection: 'column', gap: '6px', color: 'var(--text-main)' }}>
-              <li><strong>עד 6 חודשי עבודה:</strong> יום הודעה מראש בגין כל חודש.</li>
-              <li><strong>מהחודש ה-7 עד שנה:</strong> 2.5 ימים לכל חודש.</li>
-              <li><strong>שנה ומעלה:</strong> חודש ימים מראש.</li>
-              <li>במקרה של התפטרות העובדת עליה לתת הודעה מוקדמת מראש בכתב עם העתק לתאגיד.</li>
-            </ul>
-          </div>
-
-          {/* Box 4: Taxes & Agency Fees */}
-          <div style={{ background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: 'var(--radius-md)', borderRight: '3px solid var(--accent-purple)' }}>
-            <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--accent-purple)', marginBottom: '8px' }}>
-              🏛️ תשלומי חובה ואגרות (Page 2)
-            </h4>
-            <ul style={{ paddingRight: '18px', display: 'flex', flexDirection: 'column', gap: '6px', color: 'var(--text-main)' }}>
-              <li><strong>ביטוח לאומי (מעסיק):</strong> 3.6% מהברוטו לחודש.</li>
-              <li><strong>אגרת הנפקת/חידוש היתר העסקה:</strong> 370 ₪.</li>
-              <li><strong>אגרת ויזה בהזמנה מחו"ל:</strong> 205 ₪ (הארכת ויזה 205 ₪ ע"ח העובד).</li>
-              <li><strong>דמי השמה לתאגיד:</strong> 2,000 ₪ כולל מע"מ (חד פעמי).</li>
-              <li><strong>דמי תאגיד לשנה:</strong> 840 ₪ (70 ₪ / חודש).</li>
-            </ul>
-          </div>
-
         </div>
+
+        {/* Annual Entitlements (הבראה וחופשה) */}
+        <div className="glass-card" style={{ padding: '22px' }}>
+          <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--accent-emerald)', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Clock size={20} /> דמי הבראה וחופשה שנתית
+          </h4>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.88rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
+              <span style={{ color: 'var(--text-muted)' }}>ערך יום הבראה:</span>
+              <strong style={{ color: 'var(--accent-emerald)', fontFamily: 'Plus Jakarta Sans' }}>418.00 ₪</strong>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
+              <span style={{ color: 'var(--text-muted)' }}>הבראה שנה 1 (5 ימים):</span>
+              <strong style={{ fontFamily: 'Plus Jakarta Sans' }}>2,090.00 ₪</strong>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
+              <span style={{ color: 'var(--text-muted)' }}>הבראה שנים 2-3 (6 ימים):</span>
+              <strong style={{ fontFamily: 'Plus Jakarta Sans' }}>2,508.00 ₪</strong>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: 'var(--text-muted)' }}>חופשה שנתית (שנים 1-5):</span>
+              <strong style={{ fontFamily: 'Plus Jakarta Sans' }}>14 ימים (1.16/חודש)</strong>
+            </div>
+          </div>
+        </div>
+
+        {/* Agency & Permits Costs */}
+        <div className="glass-card" style={{ padding: '22px' }}>
+          <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--accent-purple)', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <ShieldAlert size={20} /> אגרות ותשלומי תאגיד
+          </h4>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.88rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
+              <span style={{ color: 'var(--text-muted)' }}>דמי טיפול לשכה חודשיים:</span>
+              <strong style={{ fontFamily: 'Plus Jakarta Sans' }}>70.00 ₪ / חודש</strong>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
+              <span style={{ color: 'var(--text-muted)' }}>אגרת היתר העסקה שנתית:</span>
+              <strong style={{ fontFamily: 'Plus Jakarta Sans' }}>370.00 ₪ / שנה</strong>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
+              <span style={{ color: 'var(--text-muted)' }}>דמי השמה חד פעמיים:</span>
+              <strong style={{ fontFamily: 'Plus Jakarta Sans' }}>2,000.00 ₪</strong>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: 'var(--text-muted)' }}>ביטוח לאומי מעסיק:</span>
+              <strong style={{ color: 'var(--accent-blue)', fontFamily: 'Plus Jakarta Sans' }}>3.6% מהברוטו</strong>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div>
