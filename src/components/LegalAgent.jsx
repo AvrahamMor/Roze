@@ -76,6 +76,15 @@ export default function LegalAgent() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
 
+  // Refresh key from env / localStorage on mount
+  useEffect(() => {
+    const currentKey = getGeminiApiKey();
+    if (currentKey) {
+      setApiKey(currentKey);
+      setTempKey(currentKey);
+    }
+  }, []);
+
   const handleSaveKey = () => {
     saveGeminiApiKey(tempKey);
     setApiKey(tempKey);

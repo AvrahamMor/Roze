@@ -6,12 +6,16 @@ const MODEL_STORAGE_KEY = 'roze_gemini_model_mode';
 
 // Get Gemini API Key from localStorage or environment
 export function getGeminiApiKey() {
-  return localStorage.getItem(STORAGE_KEY) || import.meta.env.VITE_GEMINI_API_KEY || '';
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved && saved.trim()) return saved.trim();
+  const envKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (envKey && envKey.trim()) return envKey.trim();
+  return '';
 }
 
 // Save Gemini API Key
 export function saveGeminiApiKey(key) {
-  if (key) {
+  if (key && key.trim()) {
     localStorage.setItem(STORAGE_KEY, key.trim());
   } else {
     localStorage.removeItem(STORAGE_KEY);
@@ -69,7 +73,7 @@ const HIGH_REASONING_SYSTEM_INSTRUCTION = `
 export async function askGeminiAgent(userMessage, chatHistory = [], modelMode = 'high-thinking') {
   const apiKey = getGeminiApiKey();
   if (!apiKey) {
-    throw new Error('לא נמצא מפתח Google Gemini API. אנא הגדר את המפתח בהגדרות.');
+    throw new Error('לא נמצא מפתח Google Gemini API. אנא הזן את מפתח ה-API בראש המסך או בהגדרות.');
   }
 
   // Format contents array including past turns
@@ -128,7 +132,6 @@ export async function askGeminiAgent(userMessage, chatHistory = [], modelMode = 
         }
       } else {
         const errData = await response.json().catch(() => ({}));
-        // If it's a 404 model not found or unsupported thinking config, try next model in cascade
         lastError = new Error(errData.error?.message || response.statusText);
       }
     } catch (e) {
