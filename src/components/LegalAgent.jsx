@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { askGeminiAgent, checkLiveLawUpdates, getGeminiApiKey, saveGeminiApiKey } from '../services/geminiService';
+import { 
+  askGeminiAgent, 
+  checkLiveLawUpdates, 
+  getGeminiApiKey, 
+  saveGeminiApiKey, 
+  getGeminiModelMode, 
+  saveGeminiModelMode 
+} from '../services/geminiService';
 import { 
   Bot, 
   Send, 
@@ -18,7 +25,9 @@ import {
   ChevronUp,
   Sparkle,
   Trash2,
-  Globe
+  Globe,
+  Brain,
+  Zap
 } from 'lucide-react';
 
 const QUICK_QUESTIONS = [
@@ -34,6 +43,7 @@ export default function LegalAgent() {
   const [apiKey, setApiKey] = useState(getGeminiApiKey());
   const [isEditingKey, setIsEditingKey] = useState(false);
   const [tempKey, setTempKey] = useState(apiKey);
+  const [modelMode, setModelMode] = useState(getGeminiModelMode());
   
   // Chat state
   const [messages, setMessages] = useState(() => {
@@ -45,7 +55,7 @@ export default function LegalAgent() {
       {
         id: 'welcome-1',
         sender: 'model',
-        text: `שלום מור! 👋\nאני סוכן הבינה המלאכותית המשפטי שלך (מופעל ע"י **Google Gemini AI**).\n\nאני מכיר את כל פרטי ההסכם של המטפלת **ביג'ילי ג'וזף** (תאריך כניסה: **20/07/2026**, שכר ברוטו: **6,443.85 ₪**, שבת/חג: **440 ₪**), ואת חוקי העבודה העדכניים בישראל.\n\nאיך אוכל לעזור לך היום? תוכל לשאול אותי כל שאלה חופשית או ללחוץ על אחת השאלות המהירות למטה.`
+        text: `שלום מור! 👋\nאני סוכן הבינה המלאכותית המשפטי שלך הפועל במצב **Gemini 3.7 Flash - High Thinking (חשיבה עמוקה ומקסימום דיוק)** 🧠✨\n\nאני מכיר את כל פרטי ההסכם של המטפלת **ביג'ילי ג'וזף** (תאריך כניסה: **20/07/2026**, שכר ברוטו: **6,443.85 ₪**, שבת/חג: **440 ₪**, ניכויים ועתודה), ומבצע חשיבה מעמיקה וניתוח משפטי וחשבונאי מלא לכל שאלה.\n\nאיך אוכל לסייע לך היום? תוכל לשאול כל שאלה חופשית או לבחור מהשאלות המהירות למטה.`
       }
     ];
   });
@@ -53,8 +63,6 @@ export default function LegalAgent() {
   const [inputQuery, setInputQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
-  const [showFaqFallback, setShowFaqFallback] = useState(false);
-  const [expandedFaq, setExpandedFaq] = useState(null);
 
   const chatEndRef = useRef(null);
 
@@ -72,6 +80,11 @@ export default function LegalAgent() {
     saveGeminiApiKey(tempKey);
     setApiKey(tempKey);
     setIsEditingKey(false);
+  };
+
+  const handleToggleMode = (newMode) => {
+    setModelMode(newMode);
+    saveGeminiModelMode(newMode);
   };
 
   const handleSendMessage = async (queryText = inputQuery) => {
@@ -96,7 +109,7 @@ export default function LegalAgent() {
       if (query.includes('סרוק ובדוק עדכוני חוק')) {
         replyText = await checkLiveLawUpdates();
       } else {
-        replyText = await askGeminiAgent(query, messages);
+        replyText = await askGeminiAgent(query, messages, modelMode);
       }
 
       const modelMessageObj = {
@@ -126,7 +139,7 @@ export default function LegalAgent() {
       {
         id: 'welcome-1',
         sender: 'model',
-        text: `שלום מור! שיחת הצ'אט אופסה. איך אוכל לעזור לך כעת?`
+        text: `שלום מור! שיחת הצ'אט אופסה. סוכן Gemini 3.7 Flash במצב High Thinking מוכן לשאלותיך.`
       }
     ];
     setMessages(defaultWelcome);
@@ -136,33 +149,77 @@ export default function LegalAgent() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       
-      {/* Header Banner - Gemini AI Status */}
+      {/* Header Banner - Gemini 3.7 Flash Status */}
       <div className="glass-card" style={{ 
         padding: '24px 28px', 
-        background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.14), rgba(59, 130, 246, 0.14))', 
+        background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.16), rgba(59, 130, 246, 0.16))', 
         borderColor: 'rgba(168, 85, 247, 0.35)' 
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: 'var(--gradient-purple)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', boxShadow: '0 4px 18px rgba(168, 85, 247, 0.4)' }}>
-                <Bot size={24} />
+              <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: 'linear-gradient(135deg, #a855f7 0%, #6366f1 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', boxShadow: '0 4px 20px rgba(168, 85, 247, 0.45)' }}>
+                <Brain size={26} />
               </div>
               <div>
-                <h2 style={{ fontSize: '1.65rem', fontWeight: 800, margin: 0 }}>
-                  סוכן חוק וזכויות AI חי | <span className="text-gradient-purple">Google Gemini</span>
-                </h2>
-                <p style={{ color: 'var(--text-muted)', marginTop: '2px', fontSize: '0.88rem' }}>
-                  יועץ בינה מלאכותית מותאם אישית להסכם של <strong>ביג'ילי ג'וזף</strong> ולדיני עבודה בסיעוד בישראל.
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                  <h2 style={{ fontSize: '1.65rem', fontWeight: 800, margin: 0 }}>
+                    סוכן חוק וזכויות AI חי | <span className="text-gradient-purple">Gemini 3.7 Flash</span>
+                  </h2>
+                  <span className="badge badge-purple" style={{ fontSize: '0.78rem', padding: '4px 12px' }}>
+                    <Brain size={13} /> High Thinking Mode (חשיבה עמוקה)
+                  </span>
+                </div>
+                <p style={{ color: 'var(--text-muted)', marginTop: '4px', fontSize: '0.88rem' }}>
+                  סוכן AI מומחה ברמת High Reasoning לניתוח מעמיק ומדויק של החוזה של <strong>ביג'ילי ג'וזף</strong> ודיני עבודה בסיעוד בישראל.
                 </p>
               </div>
             </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-            <span className="badge badge-purple" style={{ fontSize: '0.82rem', padding: '6px 14px' }}>
-              <Sparkles size={14} /> Gemini 2.0 Flash פעיל
-            </span>
+            {/* Reasoning Mode Selector */}
+            <div style={{ display: 'flex', background: 'var(--bg-subcard)', padding: '3px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+              <button
+                onClick={() => handleToggleMode('high-thinking')}
+                style={{
+                  padding: '5px 12px',
+                  borderRadius: '6px',
+                  border: 'none',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  background: modelMode === 'high-thinking' ? 'var(--gradient-purple)' : 'transparent',
+                  color: modelMode === 'high-thinking' ? '#fff' : 'var(--text-muted)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+                title="מצב חשיבה עמוקה וניתוח אנליטי מלא"
+              >
+                <Brain size={13} /> חשיבה עמוקה (High)
+              </button>
+
+              <button
+                onClick={() => handleToggleMode('standard')}
+                style={{
+                  padding: '5px 12px',
+                  borderRadius: '6px',
+                  border: 'none',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  background: modelMode === 'standard' ? 'var(--gradient-brand)' : 'transparent',
+                  color: modelMode === 'standard' ? '#fff' : 'var(--text-muted)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+                title="מענה מהיר סטנדרטי"
+              >
+                <Zap size={13} /> מענה מהיר
+              </button>
+            </div>
 
             <button 
               type="button" 
@@ -203,7 +260,7 @@ export default function LegalAgent() {
         padding: '0', 
         display: 'flex', 
         flexDirection: 'column', 
-        height: '620px', 
+        height: '640px', 
         background: 'var(--bg-card)',
         overflow: 'hidden' 
       }}>
@@ -219,7 +276,7 @@ export default function LegalAgent() {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.88rem', fontWeight: 700 }}>
             <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--accent-emerald)', boxShadow: '0 0 8px var(--accent-emerald)' }} />
-            שיחה חיה עם סוכן החוק של ביג'ילי
+            שיחה חיה עם סוכן החוק של ביג'ילי (Gemini 3.7 High Thinking)
           </div>
 
           <div style={{ display: 'flex', gap: '8px' }}>
@@ -279,8 +336,10 @@ export default function LegalAgent() {
           {/* AI Thinking Spinner Indicator */}
           {isLoading && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 18px', borderRadius: '16px', background: 'var(--bg-subcard)', alignSelf: 'flex-end', border: '1px solid var(--border-color)' }}>
-              <RefreshCw size={16} className="spin-anim" style={{ color: 'var(--accent-purple)' }} />
-              <span style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>הסוכן מעבד נתונים ומנסח תשובה...</span>
+              <Brain size={18} className="spin-anim" style={{ color: 'var(--accent-purple)' }} />
+              <span style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>
+                Gemini 3.7 מבצע חשיבה עמוקה וניתוח משפטי (High Reasoning)...
+              </span>
             </div>
           )}
 
@@ -349,7 +408,7 @@ export default function LegalAgent() {
             className="btn-primary"
             style={{ padding: '10px 22px', minHeight: '44px', gap: '6px' }}
           >
-            {isLoading ? <RefreshCw size={18} className="spin-anim" /> : <Send size={18} />}
+            {isLoading ? <Brain size={18} className="spin-anim" /> : <Send size={18} />}
             <span>שלח</span>
           </button>
         </div>
