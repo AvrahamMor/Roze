@@ -246,11 +246,11 @@ export default function LegalAgent() {
           <div style={{ marginTop: '18px', paddingTop: '16px', borderTop: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
             <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>Google Gemini API Key:</span>
             <input 
-              type="password" 
+              type="text" 
               value={tempKey} 
               onChange={(e) => setTempKey(e.target.value)}
               placeholder="הזן מפתח API של גוגל..."
-              style={{ maxWidth: '380px', padding: '6px 12px', fontSize: '0.85rem', height: '38px' }}
+              style={{ maxWidth: '420px', padding: '6px 12px', fontSize: '0.82rem', height: '38px', direction: 'ltr', fontFamily: 'monospace' }}
             />
             <button 
               type="button" 
@@ -259,6 +259,21 @@ export default function LegalAgent() {
               style={{ padding: '6px 16px', fontSize: '0.85rem', minHeight: '38px' }}
             >
               שמור מפתח
+            </button>
+            <button 
+              type="button" 
+              onClick={() => {
+                localStorage.removeItem('roze_gemini_api_key');
+                const defaultK = getGeminiApiKey();
+                setTempKey(defaultK);
+                setApiKey(defaultK);
+                setIsEditingKey(false);
+              }} 
+              className="btn-secondary" 
+              style={{ padding: '6px 14px', fontSize: '0.82rem', minHeight: '38px' }}
+              title="שחזר למפתח המעודכן ביותר במערכת"
+            >
+              אפס למפתח ברירת מחדל
             </button>
           </div>
         )}
