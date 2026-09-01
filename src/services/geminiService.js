@@ -90,12 +90,12 @@ export async function askGeminiAgent(userMessage, chatHistory = [], modelMode = 
     parts: [{ text: userMessage }]
   });
 
-  // Candidate models in order of priority (High-Reasoning & Thinking first)
+  // Candidate models verified on Google API in order of priority
   const candidateModels = [
-    'gemini-2.0-flash-thinking-exp-01-21', // Gemini Thinking Mode (High Reasoning)
-    'gemini-2.0-flash',                    // Gemini 2.0 Flash
-    'gemini-1.5-pro',                      // Gemini 1.5 Pro
-    'gemini-1.5-flash'                     // Fallback
+    'gemini-3.7-flash',   // Gemini 3.7 Flash
+    'gemini-2.5-pro',     // Gemini 2.5 Pro
+    'gemini-2.5-flash',   // Gemini 2.5 Flash
+    'gemini-flash-latest' // Latest Fallback
   ];
 
   const payload = {
@@ -104,12 +104,10 @@ export async function askGeminiAgent(userMessage, chatHistory = [], modelMode = 
       parts: [{ text: HIGH_REASONING_SYSTEM_INSTRUCTION }]
     },
     generationConfig: {
-      temperature: 0.2, // Low temperature for high precision & logic
+      temperature: 0.2,
       topK: 40,
       topP: 0.95,
-      maxOutputTokens: 4096,
-      // High thinking budget if model supports it
-      ...(modelMode === 'high-thinking' ? { thinkingConfig: { thinkingBudget: 2048 } } : {})
+      maxOutputTokens: 4096
     }
   };
 
@@ -132,33 +130,21 @@ export async function askGeminiAgent(userMessage, chatHistory = [], modelMode = 
         }
       } else {
         const errData = await response.json().catch(() => ({}));
-        lastError = new Error(errData.error?.message || response.statusText);
+        const msg = errData.error?.message || response.statusText;
+        
+        // Handle Depleted Prepay Credits error specifically
+        if (msg.includes('prepayment credits are depleted') || errData.error?.code === 429) {
+          throw new Error('יתרת הקרדיט המוקדמת (Prepay) בגוגל עומדת על 0.00 ₪. כדי להפעיל: שנה ב-Google AI Studio את שיטת התשלום ל-Postpay (או טען יתרה קטנה). התקרה של 5 ₪ עדיין תגן עליך!');
+        }
+
+        lastError = new Error(msg);
       }
     } catch (e) {
+      if (e.message.includes('Prepay') || e.message.includes('קרדיט')) {
+        throw e;
+      }
       lastError = e;
     }
-  }
-
-  // If thinking payload caused issue, retry with standard high-precision payload
-  try {
-    const fallbackPayload = {
-      contents: formattedContents,
-      systemInstruction: { parts: [{ text: HIGH_REASONING_SYSTEM_INSTRUCTION }] },
-      generationConfig: { temperature: 0.2, maxOutputTokens: 4096 }
-    };
-    const fallbackEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-    const fbResponse = await fetch(fallbackEndpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(fallbackPayload)
-    });
-    if (fbResponse.ok) {
-      const fbData = await fbResponse.json();
-      const text = fbData.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (text) return text;
-    }
-  } catch (e) {
-    lastError = e;
   }
 
   throw lastError || new Error('שגיאה בתקשורת עם שרתי Google Gemini.');
