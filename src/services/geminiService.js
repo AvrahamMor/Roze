@@ -92,10 +92,11 @@ export async function askGeminiAgent(userMessage, chatHistory = [], modelMode = 
 
   // Candidate models verified on Google API in order of priority
   const candidateModels = [
-    'gemini-3.7-flash',   // Gemini 3.7 Flash
-    'gemini-2.5-pro',     // Gemini 2.5 Pro
-    'gemini-2.5-flash',   // Gemini 2.5 Flash
-    'gemini-flash-latest' // Latest Fallback
+    'gemini-3.7-flash',
+    'gemini-3.6-flash',
+    'gemini-3.5-flash',
+    'gemini-flash-latest',
+    'gemini-3.1-flash-lite'
   ];
 
   const payload = {
@@ -132,15 +133,20 @@ export async function askGeminiAgent(userMessage, chatHistory = [], modelMode = 
         const errData = await response.json().catch(() => ({}));
         const msg = errData.error?.message || response.statusText;
         
+        // Handle Invalid Authentication Credentials specifically
+        if (msg.includes('invalid authentication credentials') || msg.includes('API key not valid') || response.status === 400 || response.status === 401) {
+          throw new Error(`שגיאת אימות בגוגל (API Key לא תקין או פג תוקף).\nאנא ודא שהמפתח מ-Google AI Studio הועתק כראוי: https://aistudio.google.com/app/apikey`);
+        }
+
         // Handle Depleted Prepay Credits error specifically
         if (msg.includes('prepayment credits are depleted') || errData.error?.code === 429) {
-          throw new Error('יתרת הקרדיט המוקדמת (Prepay) בגוגל עומדת על 0.00 ₪. כדי להפעיל: שנה ב-Google AI Studio את שיטת התשלום ל-Postpay (או טען יתרה קטנה). התקרה של 5 ₪ עדיין תגן עליך!');
+          throw new Error('יתרת הקרדיט המוקדמת (Prepay) בגוגל טרם עודכנה במלואה או עומדת על 0.00 ₪. כדי להפעיל מיד: ודא שהקרדיט נטען לפרויקט שבו נוצר המפתח ב-https://ai.studio/projects, או העבר לשיטת Postpay.');
         }
 
         lastError = new Error(msg);
       }
     } catch (e) {
-      if (e.message.includes('Prepay') || e.message.includes('קרדיט')) {
+      if (e.message.includes('Google AI Studio') || e.message.includes('אימות') || e.message.includes('Prepay') || e.message.includes('קרדיט')) {
         throw e;
       }
       lastError = e;
