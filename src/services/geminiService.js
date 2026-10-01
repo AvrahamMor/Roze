@@ -4,13 +4,15 @@ import { CONTRACT_DATA } from '../data/contractData';
 const STORAGE_KEY = 'roze_gemini_api_key';
 const MODEL_STORAGE_KEY = 'roze_gemini_model_mode';
 
-// Get Gemini API Key from localStorage or environment
+export const DEFAULT_GEMINI_KEY = '';
+
+// Get Gemini API Key from environment or localStorage
 export function getGeminiApiKey() {
   const saved = localStorage.getItem(STORAGE_KEY);
   if (saved && saved.trim()) return saved.trim();
   const envKey = import.meta.env.VITE_GEMINI_API_KEY;
-  if (envKey && envKey.trim()) return envKey.trim();
-  return '';
+  if (envKey && envKey.trim() && envKey !== 'your_gemini_api_key_here') return envKey.trim();
+  return DEFAULT_GEMINI_KEY;
 }
 
 // Save Gemini API Key
@@ -92,6 +94,7 @@ export async function askGeminiAgent(userMessage, chatHistory = [], modelMode = 
 
   // Candidate models verified on Google API in order of priority
   const candidateModels = [
+    'gemini-3.8-flash',
     'gemini-3.7-flash',
     'gemini-3.6-flash',
     'gemini-3.5-flash',

@@ -36,6 +36,10 @@ export default function SalaryCalculator({ holidayWorkedCount = 0, loadedRecord 
   const [holidaysCount, setHolidaysCount] = useState(holidayWorkedCount);
   const [holidayRate, setHolidayRate] = useState(LEGAL_RULES.holidayExtraRate); // 440 NIS
 
+  // One-time bonus / grant state
+  const [oneTimeBonus, setOneTimeBonus] = useState(0);
+  const [bonusReason, setBonusReason] = useState('');
+
   const [healthInsuranceTotal, setHealthInsuranceTotal] = useState(240); 
   const [healthInsuranceDeduction, setHealthInsuranceDeduction] = useState(LEGAL_RULES.maxDeductions.healthInsurance);
   
@@ -73,6 +77,8 @@ export default function SalaryCalculator({ holidayWorkedCount = 0, loadedRecord 
       if (loadedRecord.housingDeduction !== undefined) setHousingDeduction(loadedRecord.housingDeduction);
       if (loadedRecord.includeWorkerPensionDeduction !== undefined) setIncludeWorkerPensionDeduction(loadedRecord.includeWorkerPensionDeduction);
       if (loadedRecord.notes !== undefined) setCalculationNotes(loadedRecord.notes);
+      if (loadedRecord.oneTimeBonus !== undefined) setOneTimeBonus(Number(loadedRecord.oneTimeBonus));
+      if (loadedRecord.bonusReason !== undefined) setBonusReason(loadedRecord.bonusReason || '');
       
       setSaveStatus({
         type: 'info',
@@ -91,9 +97,10 @@ export default function SalaryCalculator({ holidayWorkedCount = 0, loadedRecord 
   // Calculations
   const saturdayExtraTotal = saturdaysCount * saturdayRate;
   const holidayExtraTotal = holidaysCount * holidayRate;
+  const bonusTotal = Number(oneTimeBonus) || 0;
   
-  // Total Gross salary (Base gross + extra Saturdays + extra Holidays)
-  const totalGrossSalary = grossSalaryBase + saturdayExtraTotal + holidayExtraTotal;
+  // Total Gross salary (Base gross + extra Saturdays + extra Holidays + One-Time Bonus)
+  const totalGrossSalary = grossSalaryBase + saturdayExtraTotal + holidayExtraTotal + bonusTotal;
 
   // Employer Contributions (עלויות מעסיק נוספות)
   const employerPension = LEGAL_RULES.minimumMonthlySalary * LEGAL_RULES.employerPensionRate; // 6.5% of min wage = 382.20 NIS
@@ -132,6 +139,8 @@ export default function SalaryCalculator({ holidayWorkedCount = 0, loadedRecord 
       holidaysCount,
       holidayRate,
       holidayExtraTotal,
+      oneTimeBonus: bonusTotal,
+      bonusReason: bonusReason.trim(),
       totalGrossSalary,
       employerPension,
       employerSeverance,
@@ -384,6 +393,102 @@ export default function SalaryCalculator({ holidayWorkedCount = 0, loadedRecord 
             </div>
           </div>
 
+          {/* One-Time Bonus Card (בונוס / מענק חד-פעמי) */}
+          <div style={{ 
+            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(6, 182, 212, 0.08))', 
+            padding: '18px', 
+            borderRadius: '12px', 
+            border: '1.5px solid rgba(16, 185, 129, 0.35)',
+            boxShadow: '0 4px 18px rgba(16, 185, 129, 0.08)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ width: '34px', height: '34px', borderRadius: '10px', background: 'var(--gradient-emerald)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', boxShadow: '0 2px 10px rgba(16, 185, 129, 0.35)' }}>
+                  <Sparkles size={18} />
+                </div>
+                <div>
+                  <label style={{ fontWeight: 800, fontSize: '0.96rem', color: 'var(--accent-emerald)', display: 'block' }}>
+                    בונוס / מענק חד-פעמי
+                  </label>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                    תוספת ישירה לחשבון (מענק חג, הערכה מיוחדת, מתנה)
+                  </span>
+                </div>
+              </div>
+              {bonusTotal > 0 && (
+                <span className="badge badge-emerald" style={{ fontSize: '0.82rem', padding: '4px 12px', fontWeight: 800 }}>
+                  +{bonusTotal.toLocaleString()} ₪ לתשלום
+                </span>
+              )}
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1.8fr', gap: '12px', marginBottom: '12px' }}>
+              <div>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>סכום הבונוס (₪):</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <input 
+                    type="number" 
+                    value={oneTimeBonus === 0 ? '' : oneTimeBonus} 
+                    placeholder="0"
+                    onChange={(e) => setOneTimeBonus(Math.max(0, Number(e.target.value)))} 
+                    min="0"
+                    step="50"
+                    style={{ textAlign: 'center', fontWeight: 800, fontSize: '1.05rem', color: 'var(--accent-emerald)' }}
+                  />
+                  <span style={{ fontWeight: 800, color: 'var(--text-muted)' }}>₪</span>
+                </div>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>סיבה / פירוט (אופציונלי):</span>
+                <input 
+                  type="text" 
+                  value={bonusReason} 
+                  placeholder="למשל: מענק חג, מתנת הוקרה"
+                  onChange={(e) => setBonusReason(e.target.value)} 
+                  style={{ fontSize: '0.85rem' }}
+                />
+              </div>
+            </div>
+
+            {/* Quick preset buttons */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginLeft: '4px' }}>סכומים מהירים:</span>
+              {[
+                { label: 'איפוס', val: 0 },
+                { label: '200 ₪', val: 200 },
+                { label: '300 ₪', val: 300 },
+                { label: '500 ₪', val: 500 },
+                { label: '1,000 ₪', val: 1000 }
+              ].map(preset => (
+                <button
+                  key={preset.label}
+                  type="button"
+                  onClick={() => setOneTimeBonus(preset.val)}
+                  style={{
+                    padding: '4px 10px',
+                    fontSize: '0.76rem',
+                    fontWeight: 700,
+                    borderRadius: '6px',
+                    border: bonusTotal === preset.val ? '1px solid var(--accent-emerald)' : '1px solid var(--border-color)',
+                    background: bonusTotal === preset.val ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                    color: bonusTotal === preset.val ? 'var(--accent-emerald)' : 'var(--text-secondary)',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+
+            {bonusTotal > 0 && (
+              <div style={{ marginTop: '12px', padding: '8px 12px', background: 'rgba(16, 185, 129, 0.12)', borderRadius: '8px', border: '1px dashed var(--accent-emerald)', fontSize: '0.84rem', color: 'var(--accent-emerald)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>✨ הבונוס התווסף לחשבון ומשולם ישירות בנטו</span>
+                <strong>+{bonusTotal.toLocaleString()} ₪</strong>
+              </div>
+            )}
+          </div>
+
           {/* Health Insurance & Allowed Deductions */}
           <div>
             <h4 style={{ fontSize: '0.98rem', fontWeight: 700, marginBottom: '12px', color: 'var(--accent-cyan)' }}>
@@ -569,6 +674,9 @@ export default function SalaryCalculator({ holidayWorkedCount = 0, loadedRecord 
           <div style={{ width: `${(employerBituachLeumi / totalEmployerMonthlyCost) * 100}%`, background: 'var(--gradient-cyan)', borderRadius: '10px', marginRight: '2px' }} title="ביטוח לאומי" />
           <div style={{ width: `${(saturdayExtraTotal / totalEmployerMonthlyCost) * 100}%`, background: 'var(--gradient-amber)', borderRadius: '10px', marginRight: '2px' }} title="תוספת שבת" />
           <div style={{ width: `${(holidayExtraTotal / totalEmployerMonthlyCost) * 100}%`, background: 'var(--gradient-purple)', borderRadius: '10px', marginRight: '2px' }} title="תוספת חג" />
+          {bonusTotal > 0 && (
+            <div style={{ width: `${(bonusTotal / totalEmployerMonthlyCost) * 100}%`, background: 'var(--gradient-emerald)', borderRadius: '10px', marginRight: '2px' }} title="בונוס חד פעמי" />
+          )}
         </div>
 
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '18px', marginTop: '14px', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
@@ -588,6 +696,12 @@ export default function SalaryCalculator({ holidayWorkedCount = 0, loadedRecord 
             <span style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--accent-amber)' }} />
             תוספת שבת: <strong style={{ color: 'var(--text-main)' }}>{Math.round((saturdayExtraTotal / totalEmployerMonthlyCost) * 100)}%</strong>
           </div>
+          {bonusTotal > 0 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--accent-emerald)' }} />
+              בונוס חד-פעמי: <strong style={{ color: 'var(--accent-emerald)' }}>+{bonusTotal.toLocaleString()} ₪</strong>
+            </div>
+          )}
         </div>
       </div>
 

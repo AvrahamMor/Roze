@@ -188,6 +188,11 @@ export default function SavedRecordsHistory({ onLoadRecordToCalculator, onSelect
                     <div style={{ display: 'flex', gap: '16px', marginTop: '6px', fontSize: '0.84rem', color: 'var(--text-muted)', flexWrap: 'wrap' }}>
                       <span>שבתות ששולמו: <strong style={{ color: 'var(--text-main)' }}>{rec.saturdaysCount ?? 0}</strong></span>
                       <span>חגים ששולמו: <strong style={{ color: 'var(--text-main)' }}>{rec.holidaysCount ?? 0}</strong></span>
+                      {Number(rec.oneTimeBonus) > 0 && (
+                        <span style={{ color: 'var(--accent-emerald)', fontWeight: 700 }}>
+                          🎁 בונוס: +₪{Number(rec.oneTimeBonus).toLocaleString()} {rec.bonusReason ? `(${rec.bonusReason})` : ''}
+                        </span>
+                      )}
                       <span>עודכן: {dateDisplay}</span>
                     </div>
 

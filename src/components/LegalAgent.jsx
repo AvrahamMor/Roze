@@ -55,7 +55,7 @@ export default function LegalAgent() {
       {
         id: 'welcome-1',
         sender: 'model',
-        text: `שלום מור! 👋\nאני סוכן הבינה המלאכותית המשפטי שלך הפועל במצב **Gemini 3.7 Flash - High Thinking (חשיבה עמוקה ומקסימום דיוק)** 🧠✨\n\nאני מכיר את כל פרטי ההסכם של המטפלת **ביג'ילי ג'וזף** (תאריך כניסה: **20/07/2026**, שכר ברוטו: **6,443.85 ₪**, שבת/חג: **440 ₪**, ניכויים ועתודה), ומבצע חשיבה מעמיקה וניתוח משפטי וחשבונאי מלא לכל שאלה.\n\nאיך אוכל לסייע לך היום? תוכל לשאול כל שאלה חופשית או לבחור מהשאלות המהירות למטה.`
+        text: `שלום מור! 👋\nאני סוכן הבינה המלאכותית המשפטי שלך הפועל במצב **Gemini 3.8 Flash - High Thinking (חשיבה עמוקה ומקסימום דיוק)** 🧠✨\n\nאני מכיר את כל פרטי ההסכם של המטפלת **ביג'ילי ג'וזף** (תאריך כניסה: **20/07/2026**, שכר ברוטו: **6,443.85 ₪**, שבת/חג: **440 ₪**, ניכויים ועתודה), ומבצע חשיבה מעמיקה וניתוח משפטי וחשבונאי מלא לכל שאלה.\n\nאיך אוכל לסייע לך היום? תוכל לשאול כל שאלה חופשית או לבחור מהשאלות המהירות למטה.`
       }
     ];
   });
@@ -148,7 +148,7 @@ export default function LegalAgent() {
       {
         id: 'welcome-1',
         sender: 'model',
-        text: `שלום מור! שיחת הצ'אט אופסה. סוכן Gemini 3.7 Flash במצב High Thinking מוכן לשאלותיך.`
+        text: `שלום מור! שיחת הצ'אט אופסה. סוכן Gemini 3.8 Flash במצב High Thinking מוכן לשאלותיך.`
       }
     ];
     setMessages(defaultWelcome);
@@ -158,7 +158,7 @@ export default function LegalAgent() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       
-      {/* Header Banner - Gemini 3.7 Flash Status */}
+      {/* Header Banner - Gemini 3.8 Flash Status */}
       <div className="glass-card" style={{ 
         padding: '24px 28px', 
         background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.16), rgba(59, 130, 246, 0.16))', 
@@ -173,7 +173,7 @@ export default function LegalAgent() {
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                   <h2 style={{ fontSize: '1.65rem', fontWeight: 800, margin: 0 }}>
-                    סוכן חוק וזכויות AI חי | <span className="text-gradient-purple">Gemini 3.7 Flash</span>
+                    סוכן חוק וזכויות AI חי | <span className="text-gradient-purple">Gemini 3.8 Flash</span>
                   </h2>
                   <span className="badge badge-purple" style={{ fontSize: '0.78rem', padding: '4px 12px' }}>
                     <Brain size={13} /> High Thinking Mode (חשיבה עמוקה)
@@ -300,7 +300,7 @@ export default function LegalAgent() {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.88rem', fontWeight: 700 }}>
             <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--accent-emerald)', boxShadow: '0 0 8px var(--accent-emerald)' }} />
-            שיחה חיה עם סוכן החוק של ביג'ילי (Gemini 3.7 High Thinking)
+            שיחה חיה עם סוכן החוק של ביג'ילי (Gemini 3.8 High Thinking)
           </div>
 
           <div style={{ display: 'flex', gap: '8px' }}>
@@ -362,7 +362,7 @@ export default function LegalAgent() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 18px', borderRadius: '16px', background: 'var(--bg-subcard)', alignSelf: 'flex-end', border: '1px solid var(--border-color)' }}>
               <Brain size={18} className="spin-anim" style={{ color: 'var(--accent-purple)' }} />
               <span style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>
-                Gemini 3.7 מבצע חשיבה עמוקה וניתוח משפטי (High Reasoning)...
+                Gemini 3.8 מבצע חשיבה עמוקה וניתוח משפטי (High Reasoning)...
               </span>
             </div>
           )}

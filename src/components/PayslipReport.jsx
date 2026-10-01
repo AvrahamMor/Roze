@@ -17,6 +17,10 @@ export default function PayslipReport({ holidayWorkedCount = 0, loadedRecord = n
   const [holidaysCount, setHolidaysCount] = useState(holidayWorkedCount);
   const [holidayRate, setHolidayRate] = useState(440);
   
+  // One-time bonus
+  const [oneTimeBonus, setOneTimeBonus] = useState(0);
+  const [bonusReason, setBonusReason] = useState('');
+
   const [healthDeduction, setHealthDeduction] = useState(LEGAL_RULES.maxDeductions.healthInsurance);
   const [housingDeduction, setHousingDeduction] = useState(300);
   const [workerPensionDeduction, setWorkerPensionDeduction] = useState(LEGAL_RULES.minimumMonthlySalary * LEGAL_RULES.workerPensionDeductionRate);
@@ -46,13 +50,16 @@ export default function PayslipReport({ holidayWorkedCount = 0, loadedRecord = n
       if (loadedRecord.healthInsuranceDeduction !== undefined) setHealthDeduction(loadedRecord.healthInsuranceDeduction);
       if (loadedRecord.housingDeduction !== undefined) setHousingDeduction(loadedRecord.housingDeduction);
       if (loadedRecord.workerPensionDeduction !== undefined) setWorkerPensionDeduction(loadedRecord.workerPensionDeduction);
+      if (loadedRecord.oneTimeBonus !== undefined) setOneTimeBonus(Number(loadedRecord.oneTimeBonus));
+      if (loadedRecord.bonusReason !== undefined) setBonusReason(loadedRecord.bonusReason || '');
     }
   }, [loadedRecord]);
 
   // Calculations
   const saturdayExtra = saturdaysCount * saturdayRate;
   const holidayExtra = holidaysCount * holidayRate;
-  const totalGrossSalary = grossBaseSalary + saturdayExtra + holidayExtra;
+  const bonusTotal = Number(oneTimeBonus) || 0;
+  const totalGrossSalary = grossBaseSalary + saturdayExtra + holidayExtra + bonusTotal;
 
   const employerPension = LEGAL_RULES.minimumMonthlySalary * LEGAL_RULES.employerPensionRate; // 382.20
   const employerSeverance = grossBaseSalary * LEGAL_RULES.employerSeveranceRate; // 536.77
@@ -79,6 +86,8 @@ export default function PayslipReport({ holidayWorkedCount = 0, loadedRecord = n
       if (match.healthInsuranceDeduction !== undefined) setHealthDeduction(match.healthInsuranceDeduction);
       if (match.housingDeduction !== undefined) setHousingDeduction(match.housingDeduction);
       if (match.workerPensionDeduction !== undefined) setWorkerPensionDeduction(match.workerPensionDeduction);
+      if (match.oneTimeBonus !== undefined) setOneTimeBonus(Number(match.oneTimeBonus));
+      if (match.bonusReason !== undefined) setBonusReason(match.bonusReason || '');
     }
   };
 
@@ -121,6 +130,17 @@ export default function PayslipReport({ holidayWorkedCount = 0, loadedRecord = n
               value={selectedMonthYear} 
               onChange={(e) => setSelectedMonthYear(e.target.value)}
               style={{ padding: '8px 12px', width: 'auto', borderRadius: '8px' }}
+            />
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>בונוס:</span>
+            <input 
+              type="number" 
+              placeholder="0 ₪"
+              value={oneTimeBonus === 0 ? '' : oneTimeBonus} 
+              onChange={(e) => setOneTimeBonus(Math.max(0, Number(e.target.value)))}
+              style={{ padding: '8px 10px', width: '85px', borderRadius: '8px', textAlign: 'center', fontWeight: 700 }}
             />
           </div>
 
@@ -211,6 +231,17 @@ export default function PayslipReport({ holidayWorkedCount = 0, loadedRecord = n
                 <td style={{ padding: '10px' }}>תוספת עבודה בחגים</td>
                 <td style={{ padding: '10px', textAlign: 'center' }}>{holidaysCount} חגים × ₪{holidayRate}</td>
                 <td style={{ padding: '10px', textAlign: 'left', fontWeight: 700 }}>₪{holidayExtra.toLocaleString()}</td>
+              </tr>
+            )}
+            {bonusTotal > 0 && (
+              <tr style={{ borderBottom: '1px solid var(--border-color)', background: 'rgba(16, 185, 129, 0.05)' }}>
+                <td style={{ padding: '10px' }}>
+                  בונוס / מענק חד-פעמי {bonusReason ? `(${bonusReason})` : ''}
+                </td>
+                <td style={{ padding: '10px', textAlign: 'center' }}>תוספת מיוחדת</td>
+                <td style={{ padding: '10px', textAlign: 'left', fontWeight: 700, color: 'var(--accent-emerald)' }}>
+                  +₪{bonusTotal.toLocaleString()}
+                </td>
               </tr>
             )}
             <tr style={{ borderBottom: '2px solid var(--border-color)', fontWeight: 800, background: 'rgba(255,255,255,0.02)' }}>
